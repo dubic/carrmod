@@ -1,10 +1,11 @@
 package main
 
 import (
+	"carrmod/backend/config"
 	"fmt"
-	"github.com/joho/godotenv"
 	"log"
-	"os"
+
+	"github.com/joho/godotenv"
 )
 
 func main() {
@@ -14,5 +15,11 @@ func main() {
 	if err != nil {
 		log.Fatal("Error loading .env file")
 	}
-
+	//logging
+	config.Logging()
+	//database
+	config.Database()
+	//routes
+	config.Web()
+	log.Println("App closing")
 }
