@@ -9,7 +9,10 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func UserRoutes(router *gin.Engine) {
+var userService *services.UserService
+
+func UserRoutes(router *gin.Engine, us *services.UserService) {
+	userService = us
 	root := router.Group("/users")
 	{
 		root.POST("/createAccount", createAccount)
@@ -23,7 +26,7 @@ func createAccount(c *gin.Context) {
 	log.Println("Received account creation request : ", userCreationRequest)
 
 	userCreationRequest.Create()
-	services.CreateAccount(userCreationRequest)
+	userService.CreateAccount(userCreationRequest)
 	c.JSON(http.StatusOK, gin.H{
 		"status": true,
 		"msg":    "successfully created account",

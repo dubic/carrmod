@@ -2,6 +2,7 @@ package config
 
 import (
 	"carrmod/backend/api"
+	"carrmod/backend/services"
 	"context"
 	"log"
 	"net/http"
@@ -44,7 +45,7 @@ func disconnectDatabase() {
 func Web() {
 	router := gin.Default()
 	//controllers
-	api.UserRoutes(router)
+	api.UserRoutes(router, services.NewUserService())
 
 	//start server
 	port := os.Getenv("PORT")

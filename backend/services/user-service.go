@@ -8,7 +8,11 @@ import (
 type UserService struct {
 }
 
-func CreateAccount(userCreationRequest dto.UserCreationRequest) error {
+func NewUserService() *UserService {
+	return &UserService{}
+}
+
+func (u *UserService) CreateAccount(userCreationRequest dto.UserCreationRequest) error {
 	log.Println("Hash password")
 	log.Println("create and save user")
 	log.Println("Send mail")
