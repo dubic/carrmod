@@ -2,19 +2,24 @@ package services
 
 import (
 	"carrmod/backend/domain/dto"
+	"carrmod/backend/domain/models"
 	"log"
 )
 
 type UserService struct {
+	userRepo *models.UserRepo
 }
 
-func NewUserService() *UserService {
-	return &UserService{}
+func NewUserService(userRepo *models.UserRepo) *UserService {
+	return &UserService{userRepo}
 }
 
-func (u *UserService) CreateAccount(userCreationRequest dto.UserCreationRequest) error {
-	log.Println("Hash password")
-	log.Println("create and save user")
+func (userService *UserService) CreateAccount(userCreationRequest dto.UserCreationRequest) error {
+	hashedPassword := HashPassword(userCreationRequest.Password)
+
+	user := models.NewUser(userCreationRequest, hashedPassword)
+	err := userService.userRepo.SaveNewUser(user)
+	log.Println("created and saved new user: ", user)
 	log.Println("Send mail")
-	return nil
+	return err
 }

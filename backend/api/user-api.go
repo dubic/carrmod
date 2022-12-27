@@ -26,9 +26,16 @@ func createAccount(c *gin.Context) {
 	log.Println("Received account creation request : ", userCreationRequest)
 
 	userCreationRequest.Create()
-	userService.CreateAccount(userCreationRequest)
+	err := userService.CreateAccount(userCreationRequest)
+	if err != nil {
+		c.JSON(http.StatusOK, gin.H{
+			"status": false,
+			"msg":    err,
+		})
+	}
 	c.JSON(http.StatusOK, gin.H{
-		"status": true,
-		"msg":    "successfully created account",
+		"status":               true,
+		"verificationMailSent": false,
+		"msg":                  "successfully created account",
 	})
 }

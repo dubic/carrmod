@@ -2,6 +2,7 @@ package config
 
 import (
 	"carrmod/backend/api"
+	"carrmod/backend/domain/models"
 	"carrmod/backend/services"
 	"context"
 	"log"
@@ -16,7 +17,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-var DbClient *mongo.Client
+var dbClient *mongo.Client
 
 func Logging() {
 	log.SetFlags(log.Ldate | log.Ltime | log.Lshortfile)
@@ -32,20 +33,23 @@ func Database() {
 	if err != nil {
 		log.Panic(err)
 	}
-	DbClient = client
+	dbClient = client
 	log.Println("Successfully connected to mongo database")
 }
 
 func disconnectDatabase() {
-	DbClient.Disconnect(context.TODO())
+	dbClient.Disconnect(context.TODO())
 	log.Println("Disconnected from mongo DB")
 }
 
 // register controllers here
 func Web() {
 	router := gin.Default()
+	//services
+	userRepo := models.NewUserRepo(dbClient.Database("carrmod").Collection("users"))
+	userService := services.NewUserService(userRepo)
 	//controllers
-	api.UserRoutes(router, services.NewUserService())
+	api.UserRoutes(router, userService)
 
 	//start server
 	port := os.Getenv("PORT")
