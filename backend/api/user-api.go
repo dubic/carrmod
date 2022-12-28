@@ -16,7 +16,7 @@ func RegisterUserController(router *gin.Engine, us *services.UserService) {
 	uc := UserController{us}
 	root := router.Group("/users")
 	{
-		root.POST("/createAccount", uc.createAccount)
+		root.POST("/v1/createAccount", uc.createAccount)
 	}
 }
 
@@ -24,7 +24,7 @@ func RegisterUserController(router *gin.Engine, us *services.UserService) {
 func (uc UserController) createAccount(c *gin.Context) {
 	var userCreationRequest dto.UserCreationRequest
 	c.ShouldBindJSON(&userCreationRequest)
-	log.Println("Received account creation request : ", userCreationRequest)
+	log.Println("Received account creation request : ", userCreationRequest.Print())
 
 	userCreationRequest.Create()
 	userCreationResponse, err := uc.svc.CreateAccount(userCreationRequest)

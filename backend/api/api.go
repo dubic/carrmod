@@ -12,8 +12,5 @@ func Respond(c *gin.Context, response any, err error) {
 			"msg": err.Error(),
 		})
 	}
-	c.JSON(http.StatusOK, gin.H{
-		"response": response,
-		"msg":      "successfully created account",
-	})
+	c.JSON(http.StatusOK, response)
 }

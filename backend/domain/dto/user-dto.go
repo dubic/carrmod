@@ -2,6 +2,7 @@ package dto
 
 import (
 	"errors"
+	"fmt"
 	"net/mail"
 )
 
@@ -32,10 +33,14 @@ func (u *UserCreationRequest) Create() []error {
 		errs = append(errs, errors.New("email is not valid"))
 	}
 	if u.Password == "" {
-		errs = append(errs, errors.New("Password is required"))
+		errs = append(errs, errors.New("password is required"))
 	}
 	if len(u.Password) < 8 || len(u.Password) > 50 {
-		errs = append(errs, errors.New("Password must be between 8 to 50 characters"))
+		errs = append(errs, errors.New("password must be between 8 to 50 characters"))
 	}
 	return errs
+}
+
+func (u UserCreationRequest) Print() string {
+	return fmt.Sprintf("Name: %s, Email: %s", u.Name, u.Email)
 }
