@@ -49,7 +49,7 @@ func Web() {
 	userRepo := models.NewUserRepo(dbClient.Database("carrmod").Collection("users"))
 	userService := services.NewUserService(userRepo)
 	//controllers
-	api.UserRoutes(router, userService)
+	api.RegisterUserController(router, userService)
 
 	//start server
 	port := os.Getenv("PORT")

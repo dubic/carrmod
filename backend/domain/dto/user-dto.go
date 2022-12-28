@@ -12,6 +12,14 @@ type UserCreationRequest struct {
 	Password string `json:"password"`
 }
 
+// user creation request
+type UserCreationResponse struct {
+	VerificationMailSent bool   `json:"verificationMailSent"`
+	Created              bool   `json:"created"`
+	Email                string `json:"email"`
+	Msg                  string `json:"msg"`
+}
+
 func (u *UserCreationRequest) Create() []error {
 	var errs []error
 	if u.Name == "" {
