@@ -4,28 +4,29 @@ import (
 	"carrmod/backend/domain/dto"
 	"carrmod/backend/services"
 	"log"
-	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
 
-func UserRoutes(router *gin.Engine) {
+type UserController struct {
+	svc *services.UserService
+}
+
+func RegisterUserController(router *gin.Engine, us *services.UserService) {
+	uc := UserController{us}
 	root := router.Group("/users")
 	{
-		root.POST("/createAccount", createAccount)
+		root.POST("/v1/createAccount", uc.createAccount)
 	}
 }
 
 // create a new profile using email as username and password
-func createAccount(c *gin.Context) {
+func (uc UserController) createAccount(c *gin.Context) {
 	var userCreationRequest dto.UserCreationRequest
 	c.ShouldBindJSON(&userCreationRequest)
-	log.Println("Received account creation request : ", userCreationRequest)
+	log.Println("Received account creation request : ", userCreationRequest.Print())
 
 	userCreationRequest.Create()
-	services.CreateAccount(userCreationRequest)
-	c.JSON(http.StatusOK, gin.H{
-		"status": true,
-		"msg":    "successfully created account",
-	})
+	userCreationResponse, err := uc.svc.CreateAccount(userCreationRequest)
+	Respond(c, userCreationResponse, err)
 }
