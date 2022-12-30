@@ -47,7 +47,8 @@ func Web() {
 	router := gin.Default()
 	//services
 	userRepo := models.NewUserRepo(dbClient.Database("carrmod").Collection("users"))
-	userService := services.NewUserService(userRepo)
+	sessionRepo := models.NewSessionRepo(dbClient.Database("carrmod").Collection("sessions"))
+	userService := services.NewUserService(userRepo, services.NewSessionManager(sessionRepo))
 	//controllers
 	api.RegisterUserController(router, userService)
 
