@@ -75,6 +75,7 @@ func (svc *UserService) Authenticate(loginRequest dto.LoginRequest) dto.LoginRes
 	return loginResponse
 }
 
+// create a session and token using an autheticated login response
 func (svc *UserService) CreateUserSession(loginResponse dto.LoginResponse) dto.LoginResponse {
 	token, jwtErr := GenerateJwt(loginResponse.Account.Email)
 	if jwtErr != nil {
@@ -91,4 +92,9 @@ func (svc *UserService) CreateUserSession(loginResponse dto.LoginResponse) dto.L
 	loginResponse.LoginTime = time.Now()
 	loginResponse.Msg = "Successful"
 	return loginResponse
+}
+
+func (svc *UserService) Logout(email string) {
+	sessions := svc.sessionManager.RemoveSession(email)
+	log.Printf("logged [%s] out of %d sessions", email, sessions)
 }

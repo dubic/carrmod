@@ -4,6 +4,7 @@ import (
 	"carrmod/backend/domain/dto"
 	"context"
 	"fmt"
+	"log"
 	"time"
 
 	"go.mongodb.org/mongo-driver/bson"
@@ -80,8 +81,29 @@ func (repo UserRepo) FindUserByEmailAndPassword(email string, password string) (
 }
 
 // -----------------------SESSION REPO---------------------
+
 // insert session in db
 func (repo SessionRepo) SaveNewSession(session Session) error {
 	_, err := repo.sessions.InsertOne(context.TODO(), session)
 	return err
+}
+
+// delete session in db
+func (repo SessionRepo) DeleteSession(session Session) error {
+	_, err := repo.sessions.DeleteOne(context.TODO(), bson.D{
+		{Key: "user", Value: session.User},
+	})
+	return err
+}
+
+// delete all sessions of a user with email. user can have multiple sessions
+func (repo SessionRepo) DeleteSessions(email string) int64 {
+	result, err := repo.sessions.DeleteMany(context.TODO(), bson.D{
+		{Key: "user", Value: email},
+	})
+	if err != nil {
+		log.Printf("error deleting [%s] sessions: %s", email, err)
+		return 0
+	}
+	return result.DeletedCount
 }
