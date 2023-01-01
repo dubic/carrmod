@@ -13,3 +13,7 @@ func NewSessionManager(repo *models.SessionRepo) *SessionManager {
 func (s SessionManager) NewSession(session models.Session) error {
 	return s.Repo.SaveNewSession(session)
 }
+
+func (s SessionManager) RemoveSession(email string) int64 {
+	return s.Repo.DeleteSessions(email)
+}

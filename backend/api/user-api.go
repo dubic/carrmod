@@ -18,6 +18,7 @@ func RegisterUserController(router *gin.Engine, us *services.UserService) {
 	{
 		root.POST("/v1/createAccount", uc.createAccount)
 		root.POST("/v1/login", uc.login)
+		root.GET("/v1/logout", Authentication, uc.logout)
 	}
 }
 
@@ -47,4 +48,13 @@ func (ctrl UserController) login(c *gin.Context) {
 	}
 	loginResponse := ctrl.svc.Login(loginRequest)
 	Respond(c, loginResponse, nil)
+}
+
+// Logout with email
+func (ctrl UserController) logout(c *gin.Context) {
+	email := c.GetString("email")
+	log.Println("Received logout request : ", email)
+
+	ctrl.svc.Logout(email)
+	Respond(c, gin.H{"msg": "Logout successful"}, nil)
 }
