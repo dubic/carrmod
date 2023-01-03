@@ -60,6 +60,9 @@ func (repo UserRepo) SaveNewUser(user User) error {
 func (repo UserRepo) FindUserByEmail(email string) (User, error) {
 	var user User
 	err := repo.users.FindOne(context.TODO(), bson.D{{Key: "email", Value: email}}).Decode(&user)
+	if err != nil {
+		log.Printf("error [%s] in find user by email: %s", email, err)
+	}
 	return user, err
 }
 
