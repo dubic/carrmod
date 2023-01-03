@@ -44,6 +44,12 @@ func (svc *UserService) UserLoginResponse(user models.User) dto.LoginResponse {
 	}}
 }
 
+func (svc *UserService) UserToAccount(user models.User) dto.Account {
+	return dto.Account{
+		Name: user.Name, Email: user.Email, CreatedAt: user.Base.CreatedAt, UpdatedAt: user.Base.UpdatedAt,
+	}
+}
+
 // Login with email and password of previously created account
 func (svc *UserService) Login(loginRequest dto.LoginRequest) dto.LoginResponse {
 	loginResponse := svc.Authenticate(loginRequest)
@@ -97,4 +103,12 @@ func (svc *UserService) CreateUserSession(loginResponse dto.LoginResponse) dto.L
 func (svc *UserService) Logout(email string) {
 	sessions := svc.sessionManager.RemoveSession(email)
 	log.Printf("logged [%s] out of %d sessions", email, sessions)
+}
+
+func (svc *UserService) LoadProfile(email string) (dto.Account, error) {
+	user, err := svc.userRepo.FindUserByEmail(email)
+	if err != nil {
+		return dto.Account{}, fmt.Errorf("sorry, error occurred loading profile %s", email)
+	}
+	return svc.UserToAccount(user), nil
 }
