@@ -83,6 +83,16 @@ func (repo UserRepo) FindUserByEmailAndPassword(email string, password string) (
 	return user, err
 }
 
+// update user. empty values will be skiped
+func (repo UserRepo) UpdateUser(email string, user User) (int64, error) {
+	result, err := repo.users.ReplaceOne(context.TODO(), bson.D{{Key: "email", Value: email}}, user)
+	if err != nil {
+		log.Printf("UpdateUser([%s]): %s", email, err)
+		return -1, nil
+	}
+	return result.ModifiedCount, nil
+}
+
 // -----------------------SESSION REPO---------------------
 
 // insert session in db

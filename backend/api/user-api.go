@@ -20,6 +20,7 @@ func RegisterUserController(router *gin.Engine, us *services.UserService) {
 		root.POST("/v1/login", uc.login)
 		root.GET("/v1/logout", Authentication, uc.logout)
 		root.GET("/v1/profile", Authentication, uc.profile)
+		root.PATCH("/v1", Authentication, uc.updateProfile)
 	}
 }
 
@@ -66,5 +67,16 @@ func (ctrl UserController) profile(c *gin.Context) {
 	log.Println("load profile request : ", email)
 
 	account, err := ctrl.svc.LoadProfile(email)
+	Respond(c, account, err)
+}
+
+// update profile with email
+func (ctrl UserController) updateProfile(c *gin.Context) {
+	email := c.GetString("email")
+	var account dto.Account
+	c.ShouldBindJSON(account)
+	log.Println("update profile request : ", email)
+
+	account, err := ctrl.svc.UpdateProfile(email, account.Name)
 	Respond(c, account, err)
 }

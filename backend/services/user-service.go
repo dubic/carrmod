@@ -112,3 +112,18 @@ func (svc *UserService) LoadProfile(email string) (dto.Account, error) {
 	}
 	return svc.UserToAccount(user), nil
 }
+
+// update account details. only name can be updated
+func (svc *UserService) UpdateProfile(email string, name string) (dto.Account, error) {
+	found, err := svc.userRepo.FindUserByEmail(email)
+	if err != nil {
+		return dto.Account{}, fmt.Errorf("sorry, error occurred loading profile %s", email)
+	}
+	found.Name = name
+	_, err2 := svc.userRepo.UpdateUser(email, found)
+	if err2 != nil {
+		return dto.Account{}, fmt.Errorf("error occurred saving profile %s", email)
+	}
+	log.Printf("update profile for : %s", email)
+	return svc.UserToAccount(found), nil
+}
